@@ -1,0 +1,121 @@
+{
+  "common": {
+    "loading": "로딩 중...",
+    "error": "오류",
+    "success": "성공",
+    "submit": "제출",
+    "cancel": "취소",
+    "confirm": "확인",
+    "delete": "삭제",
+    "save": "저장",
+    "close": "닫기",
+    "back": "뒤로",
+    "home": "홈",
+    "contact": "연락처",
+    "login": "로그인",
+    "logout": "로그아웃",
+    "dashboard": "대시보드",
+    "learnMore": "더 알아보기",
+    "getStarted": "시작하기",
+    "viewDetails": "자세히 보기"
+  },
+  "agency": {
+    "name": "CCA 교육컨설팅",
+    "shortName": "CCA",
+    "subtitle": "프리미엄 국제교육 컨설팅",
+    "description": "글로벌 교육 기회의 신뢰할 수 있는 파트너"
+  },
+  "navigation": {
+    "home": "홈",
+    "languageInstitutes": "어학원",
+    "universities": "대학교",
+    "graduateSchools": "대학원",
+    "koreanCourses": "한국어 프로그램",
+    "agencyInfo": "회사 소개",
+    "contact": "문의하기",
+    "admin": "관리자"
+  },
+  "hero": {
+    "title": "글로벌 교육으로 미래를 바꾸세요",
+    "subtitle": "세계 최고 수준의 국제 교육 기회로 향하는 신뢰할 수 있는 관문",
+    "description": "전 세계 선도적인 교육 기관과 파트너십을 맺고 있습니다. 지원부터 졸업까지 포괄적인 지원을 제공하여 해외에서의 학업 성공을 보장합니다.",
+    "learnMore": "프로그램 탐색",
+    "koreanCourses": "한국어 프로그램",
+    "stats": {
+      "students": "10,000+ 성공한 학생들",
+      "universities": "500+ 파트너 대학",
+      "countries": "25+ 개국",
+      "success": "98% 성공률"
+    }
+  },
+  "services": {
+    "title": "프리미엄 교육 프로그램",
+    "subtitle": "귀하의 목표에 맞춘 세계 수준의 교육 기회를 발견하세요",
+    "languageInstitutes": {
+      "title": "어학원",
+      "description": "인증된 강사와 함께하는 집중 언어 프로그램"
+    },
+    "universities": {
+      "title": "대학교",
+      "description": "학사 및 학부 학위 프로그램"
+    },
+    "graduateSchools": {
+      "title": "대학원",
+      "description": "최고 기관의 석사 및 박사 프로그램"
+    },
+    "koreanCourses": {
+      "title": "한국어 프로그램",
+      "description": "원어민과 문화 몰입을 통한 한국어 학습"
+    }
+  },
+  "features": {
+    "title": "저희 에이전시를 선택하는 이유",
+    "subtitle": "2010년부터 국제 교육 컨설팅의 우수성을 보여왔습니다",
+    "expertConsultation": {
+      "title": "전문가 상담",
+      "description": "10년 이상 경험을 가진 인증된 교육 컨설턴트의 맞춤형 가이드"
+    },
+    "globalNetwork": {
+      "title": "글로벌 네트워크", 
+      "description": "25개국 500개 이상의 최고 순위 기관과의 독점 파트너십"
+    },
+    "comprehensiveSupport": {
+      "title": "종합 지원",
+      "description": "지원부터 졸업까지: 비자 지원, 숙소, 학업 지원"
+    },
+    "provenResults": {
+      "title": "입증된 성공",
+      "description": "98% 합격률과 10,000명 이상의 성공적인 국제 학생 배치"
+    }
+  },
+  "contact": {
+    "title": "오늘 여정을 시작하세요",
+    "subtitle": "전문 상담사로부터 맞춤형 상담을 받으세요",
+    "form": {
+      "name": "성명",
+      "email": "이메일 주소",
+      "phone": "전화번호",
+      "message": "교육 목표에 대해 알려주세요",
+      "send": "문의 보내기",
+      "sending": "전송 중...",
+      "success": "감사합니다! 24시간 내에 연락드리겠습니다.",
+      "error": "죄송합니다. 오류가 발생했습니다. 다시 시도하거나 직접 연락해 주세요."
+    },
+    "info": {
+      "response": "24시간 내 답변",
+      "consultation": "무료 초기 상담",
+      "support": "다국어 지원 가능"
+    }
+  },
+  "admin": {
+    "title": "관리자 포털",
+    "login": {
+      "title": "관리자 로그인",
+      "subtitle": "인증된 직원을 위한 보안 접근",
+      "password": "관리자 비밀번호",
+      "signIn": "로그인",
+      "loggingIn": "인증 중...",
+      "backToHome": "← 웹사이트로 돌아가기"
+    }
+  }
+}

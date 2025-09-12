@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Allow both app and pages directory
+  reactStrictMode: true,
 };
 
 export default nextConfig;

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1E90FF;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#0080FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0066CC;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="redGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF4444;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FF3333;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#CC2222;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Blue arc -->
+  <path d="M 40 40 A 60 60 0 1 1 160 160" 
+        fill="none" 
+        stroke="url(#blueGradient)" 
+        stroke-width="25" 
+        stroke-linecap="round"/>
+  
+  <!-- Red arc -->
+  <path d="M 160 40 A 60 60 0 1 1 40 160" 
+        fill="none" 
+        stroke="url(#redGradient)" 
+        stroke-width="25" 
+        stroke-linecap="round"/>
+  
+  <!-- CCA Text -->
+  <text x="100" y="110" 
+        font-family="Arial, sans-serif" 
+        font-size="32" 
+        font-weight="bold" 
+        text-anchor="middle" 
+        fill="#000000">CCA</text>
+  
+  <!-- Education Agency Text -->
+  <text x="100" y="130" 
+        font-family="Arial, sans-serif" 
+        font-size="12" 
+        text-anchor="middle" 
+        fill="#666666">Education Agency</text>
+</svg>

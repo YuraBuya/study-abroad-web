@@ -1,26 +1,154 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #f9fafb;
+  --foreground: #111827;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Mobile-first CSS Classes */
+.btn {
+  @apply px-4 py-3 text-base bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-blue-700 transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-lg hover:shadow-xl;
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.btn-secondary {
+  @apply px-4 py-3 text-base bg-white text-gray-700 rounded-xl font-semibold hover:bg-gray-50 border-2 border-gray-200 hover:border-blue-300 transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 shadow-md hover:shadow-lg;
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.card {
+  @apply bg-white rounded-2xl shadow-lg p-6 transition-all duration-300 border border-gray-100;
+}
+
+.input {
+  @apply w-full px-4 py-3 text-base border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-300 bg-white hover:border-gray-300;
+  min-height: 44px;
+}
+
+.input:focus {
+  @apply border-blue-500 ring-2 ring-blue-500;
+}
+
+.container-custom {
+  @apply max-w-7xl mx-auto px-4 sm:px-6;
+}
+
+/* Mobile-first grid utilities */
+.grid-responsive-1 {
+  @apply grid grid-cols-1 gap-6;
+}
+
+.grid-responsive-2 {
+  @apply grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8;
+}
+
+.grid-responsive-3 {
+  @apply grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-8;
+}
+
+.grid-responsive-4 {
+  @apply grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-6 md:grid-cols-2 md:gap-8 lg:grid-cols-4 lg:gap-8;
+}
+
+/* Mobile navigation improvements */
+.mobile-menu {
+  @apply block md:hidden;
+}
+
+.desktop-menu {
+  @apply hidden md:flex;
+}
+
+/* Touch Targets */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Responsive padding/margin utilities */
+.py-responsive {
+  @apply py-12 md:py-16 lg:py-20;
+}
+
+.px-responsive {
+  @apply px-4 md:px-6;
+}
+
+/* Mobile-Enhanced Flex utilities */
+.flex-col-mobile {
+  @apply flex flex-col md:flex-row;
+}
+
+/* Mobile-specific utilities */
+.mobile-full-width {
+  @apply w-full;
+}
+
+.mobile-center {
+  @apply mx-auto text-center;
+}
+
+.mobile-stack {
+  @apply flex flex-col gap-4;
+}
+
+/* Mobile-Enhanced glassmorphism */
+.glass-mobile {
+  @apply bg-white/80 backdrop-blur-sm border border-white/20;
+}
+
+/* Mobile-Enhanced gradients */
+.gradient-mobile {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Better mobile focus states */
+.mobile-focus:focus {
+  @apply ring-4 ring-blue-500 ring-opacity-50 outline-none;
+}
+
+/* Mobile-Enhanced shadows */
+.shadow-mobile {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.shadow-mobile-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Glass morphism effect */
+.glass {
+  @apply bg-white/20 backdrop-blur-lg border border-white/30 shadow-lg;
+}
+
+/* Responsive text alignment */
+.text-center-mobile {
+  @apply text-center md:text-left;
+}
+
+/* Responsive flex utilities */
+.flex-col-mobile {
+  @apply flex flex-col md:flex-row;
+}
+
+.flex-wrap-mobile {
+  @apply flex flex-col md:flex-row md:flex-wrap;
 }
