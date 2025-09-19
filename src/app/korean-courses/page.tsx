@@ -1,194 +1,234 @@
 'use client';
 
 import { useState } from 'react';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import Modal from '@/components/Modal';
-import { koreanCoursesInfo } from '@/data/schoolsData';
+import { motion } from 'framer-motion';
+import CourseCard from '@/components/CourseCard';
+import ClassTimetable from '@/components/ClassTimetable';
+import ContactForm from '@/components/ContactForm';
+import { COURSES, TIMETABLES } from '@/lib/courses';
+import { BookOpen, BookOpenText, Sparkles, Layers, Rocket, Clock, HelpCircle } from 'lucide-react';
 
 export default function KoreanCourses() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedFilter, setSelectedFilter] = useState<'All' | 'Beginner' | 'Intermediate' | 'Advanced'>('All');
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const filteredCourses = selectedFilter === 'All' 
+    ? COURSES 
+    : COURSES.filter(course => course.level === selectedFilter);
+
+  const handleEnroll = (courseId: string) => {
+    const course = COURSES.find(c => c.id === courseId);
+    if (course) {
+      // Scroll to contact form
+      const contactSection = document.getElementById('contact-section');
+      if (contactSection) {
+        contactSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
-      
-      <main className="flex-1 py-12">
-        <div className="container-custom">
-          {/* Page Header */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-800 mb-4">
-              한국어 강의 / Korean Language Courses
-            </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-              한국어를 체계적으로 배우고 한국 문화를 경험하세요. 
-              초급부터 고급까지 다양한 레벨의 수업을 제공합니다.
-            </p>
-            <p className="text-lg text-gray-500 mb-8">
-              Learn Korean systematically and experience Korean culture. 
-              We offer classes from beginner to advanced levels.
-            </p>
-            
-            <button
-              onClick={openModal}
-              className="btn text-lg px-8 py-4"
+      <main className="flex-1">
+        {/* Hero Section */}
+        <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-slate-100">
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 via-white to-sky-50/30" />
+          <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-gradient-to-br from-emerald-100/40 to-sky-100/40 blur-3xl" />
+          <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-gradient-to-br from-sky-100/40 to-emerald-100/40 blur-3xl" />
+          <div className="relative mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+            <motion.div
+              className="text-center max-w-4xl mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
             >
-              자세히 보기 / View Details
-            </button>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700 bg-clip-text text-transparent mb-2">
+                한국어 강의
+              </h1>
+              <p className="text-xl md:text-2xl font-medium text-slate-600 mb-6">Korean Language Courses</p>
+              <p className="text-lg text-slate-700 leading-relaxed mb-2">
+                한국어를 체계적으로 배우고 한국 문화를 경험하세요.
+              </p>
+              <p className="text-base text-slate-600 mb-8">
+                초급부터 고급까지 다양한 레벨의 수업을 제공합니다.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <a href="#courses" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-600 to-sky-600 px-6 py-3 text-white text-base font-medium transition-all duration-200 hover:from-emerald-700 hover:to-sky-700 hover:shadow-lg hover:scale-105 active:scale-95">
+                  <BookOpen className="h-5 w-5" />
+                  수강 과정 보기
+                </a>
+                <a href="#class-timetable" className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200/80 bg-white/80 backdrop-blur-sm px-6 py-3 text-base font-medium text-slate-700 transition-all duration-200 hover:bg-white hover:border-slate-300 hover:shadow-md hover:scale-105 active:scale-95">
+                  <Clock className="h-5 w-5" />
+                  시간표 확인
+                </a>
+              </div>
+            </motion.div>
           </div>
+        </section>
 
-          {/* Course Overview Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-            <div className="card">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">초급 과정</h3>
-                <p className="text-gray-600 mb-2">Beginner Level</p>
-                <p className="text-sm text-gray-500">한글 기초부터 일상 회화까지</p>
+        {/* Courses Section */}
+        <section id="courses" className="py-16">
+          <div className="mx-auto max-w-7xl px-4">
+            <motion.div
+              className="text-center mb-12"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-3xl font-bold tracking-tight text-slate-900 mb-3 inline-flex items-center gap-2">
+                <BookOpenText className="h-7 w-7 text-emerald-600" />
+                수강 과정 / Available Courses
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
+                다양한 레벨과 목적에 맞는 한국어 과정을 선택하세요
+              </p>
+
+              {/* Filter Buttons */}
+              <div className="flex flex-wrap justify-center gap-2 mb-8">
+                {['All', 'Beginner', 'Intermediate', 'Advanced'].map((filter) => (
+                  <button
+                    key={filter}
+                    onClick={() => setSelectedFilter(filter as any)}
+                    className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                      selectedFilter === filter
+                        ? 'bg-emerald-600 text-white shadow-md hover:bg-emerald-700'
+                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    }`}
+                  >
+                    {filter === 'All' && <Sparkles className="h-4 w-4" />}
+                    {filter === 'Beginner' && <BookOpenText className="h-4 w-4" />}
+                    {filter === 'Intermediate' && <Layers className="h-4 w-4" />}
+                    {filter === 'Advanced' && <Rocket className="h-4 w-4" />}
+                    {filter === 'All' ? '전체' : filter}
+                  </button>
+                ))}
               </div>
-            </div>
+            </motion.div>
 
-            <div className="card">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">중급 과정</h3>
-                <p className="text-gray-600 mb-2">Intermediate Level</p>
-                <p className="text-sm text-gray-500">문법 심화 및 실용 표현</p>
-              </div>
+            {/* Course Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredCourses.map((course, index) => (
+                <motion.div
+                  key={course.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                >
+                  <CourseCard course={course} onEnroll={handleEnroll} />
+                </motion.div>
+              ))}
             </div>
+          </div>
+        </section>
 
-            <div className="card">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">고급 과정</h3>
-                <p className="text-gray-600 mb-2">Advanced Level</p>
-                <p className="text-sm text-gray-500">비즈니스 한국어 및 TOPIK 준비</p>
+        {/* Timetable Section */}
+        <section className="bg-gray-50 py-16">
+          <div className="mx-auto max-w-7xl px-4">
+            <div id="class-timetable" className="rounded-3xl bg-white/80 ring-1 ring-slate-200/60 p-4 sm:p-6 lg:p-8 shadow-sm">
+              <ClassTimetable datasets={TIMETABLES} />
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ Section */}
+        <section className="py-16">
+          <div className="mx-auto max-w-7xl px-4">
+            <motion.div
+              className="text-center mb-12"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-3xl font-bold text-gray-800 mb-4 inline-flex items-center gap-2">
+                <HelpCircle className="h-7 w-7 text-emerald-600" />
+                자주 묻는 질문 / FAQ
+              </h2>
+            </motion.div>
+
+            <div className="max-w-4xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {[
+                  {
+                    question: "완전 초보자도 수업을 들을 수 있나요?",
+                    questionEn: "Can complete beginners take classes?",
+                    answer: "네, 한글을 전혀 모르는 완전 초보자를 위한 기초반이 있습니다. 한글부터 차근차근 배우실 수 있습니다.",
+                    answerEn: "Yes, we have beginner classes for those who don't know Hangeul at all. You can learn step by step starting from the Korean alphabet."
+                  },
+                  {
+                    question: "수업 중간에 레벨을 변경할 수 있나요?",
+                    questionEn: "Can I change levels during the course?",
+                    answer: "담당 강사와 상담 후 적절한 레벨로 변경이 가능합니다. 학습 진도에 맞춰 조정해드립니다.",
+                    answerEn: "Yes, you can change levels after consultation with your instructor. We adjust according to your learning progress."
+                  },
+                  {
+                    question: "개인 과외는 어떻게 신청하나요?",
+                    questionEn: "How do I apply for private tutoring?",
+                    answer: "개인 과외는 별도 상담을 통해 일정과 커리큘럼을 맞춤 설정합니다. 아래 연락처로 문의주세요.",
+                    answerEn: "Private tutoring requires separate consultation to customize schedule and curriculum. Please contact us using the information below."
+                  },
+                  {
+                    question: "TOPIK 시험 준비반은 언제 시작하나요?",
+                    questionEn: "When does the TOPIK preparation class start?",
+                    answer: "TOPIK 시험 일정에 맞춰 분기별로 개강합니다. 시험 2개월 전부터 집중 준비과정을 운영합니다.",
+                    answerEn: "TOPIK preparation classes start quarterly according to the exam schedule. We run intensive preparation courses starting 2 months before the exam."
+                  }
+                ].map((faq, index) => (
+                  <motion.div
+                    key={index}
+                    className="bg-white/90 p-6 rounded-2xl shadow-sm ring-1 ring-slate-200"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                  >
+                    <h3 className="font-semibold text-gray-800 mb-2">
+                      {faq.question}
+                    </h3>
+                    <p className="text-sm text-gray-600 mb-3">
+                      {faq.questionEn}
+                    </p>
+                    <p className="text-gray-700 mb-2">
+                      {faq.answer}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {faq.answerEn}
+                    </p>
+                  </motion.div>
+                ))}
               </div>
             </div>
           </div>
+        </section>
 
-          {/* Features Section */}
-          <div className="bg-red-50 rounded-xl p-8 mb-16">
-            <h2 className="text-3xl font-bold text-gray-800 text-center mb-8">
-              특별 프로그램 / Special Programs
-            </h2>
+        {/* CTA Section */}
+        <section id="contact-section" className="bg-gradient-to-br from-emerald-50 to-sky-100 py-16">
+          <div className="mx-auto max-w-7xl px-4">
+            <motion.div
+              className="text-center mb-12"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-3xl font-bold text-gray-800 mb-4">
+                한국어 학습을 시작하세요
+              </h2>
+              <h3 className="text-xl font-semibold text-blue-600 mb-4">
+                Start Your Korean Learning Journey
+              </h3>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                전문 강사진과 함께 체계적이고 즐거운 한국어 학습을 경험해보세요
+              </p>
+            </motion.div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="bg-white rounded-lg p-6">
-                <h3 className="text-xl font-semibold text-gray-800 mb-3">
-                  문화 체험 프로그램
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Korean Cultural Experience Program
-                </p>
-                <ul className="text-gray-600 space-y-2">
-                  <li>• 전통 문화 체험 (한복, 서예, 차문화)</li>
-                  <li>• K-pop 댄스 및 드라마 학습</li>
-                  <li>• 한국 요리 체험</li>
-                  <li>• 문화 유적지 탐방</li>
-                </ul>
-              </div>
-
-              <div className="bg-white rounded-lg p-6">
-                <h3 className="text-xl font-semibold text-gray-800 mb-3">
-                  비즈니스 한국어
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Business Korean Program
-                </p>
-                <ul className="text-gray-600 space-y-2">
-                  <li>• 비즈니스 회화 및 이메일 작성</li>
-                  <li>• 프레젠테이션 스킬</li>
-                  <li>• 한국 기업 문화 이해</li>
-                  <li>• 취업 면접 준비</li>
-                </ul>
-              </div>
-            </div>
+            <ContactForm />
           </div>
-
-          {/* Schedule & Pricing */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="card">
-              <h3 className="text-2xl font-semibold text-gray-800 mb-4">
-                수업 일정 / Class Schedule
-              </h3>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center py-2 border-b">
-                  <span className="font-medium">주간 집중반</span>
-                  <span className="text-gray-600">월-금 09:00-12:00</span>
-                </div>
-                <div className="flex justify-between items-center py-2 border-b">
-                  <span className="font-medium">야간 과정</span>
-                  <span className="text-gray-600">월-수-금 18:00-21:00</span>
-                </div>
-                <div className="flex justify-between items-center py-2 border-b">
-                  <span className="font-medium">주말 과정</span>
-                  <span className="text-gray-600">토-일 10:00-16:00</span>
-                </div>
-                <div className="flex justify-between items-center py-2">
-                  <span className="font-medium">개인 과외</span>
-                  <span className="text-gray-600">시간 조율 가능</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="card">
-              <h3 className="text-2xl font-semibold text-gray-800 mb-4">
-                수강료 / Tuition Fees
-              </h3>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center py-2 border-b">
-                  <span className="font-medium">기초 과정 (4주)</span>
-                  <span className="text-gray-600 font-semibold">₩480,000</span>
-                </div>
-                <div className="flex justify-between items-center py-2 border-b">
-                  <span className="font-medium">정규 과정 (12주)</span>
-                  <span className="text-gray-600 font-semibold">₩1,200,000</span>
-                </div>
-                <div className="flex justify-between items-center py-2 border-b">
-                  <span className="font-medium">집중 과정 (8주)</span>
-                  <span className="text-gray-600 font-semibold">₩900,000</span>
-                </div>
-                <div className="flex justify-between items-center py-2">
-                  <span className="font-medium">개인 과외 (1시간)</span>
-                  <span className="text-gray-600 font-semibold">₩60,000</span>
-                </div>
-              </div>
-              <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                <p className="text-sm text-blue-700">
-                  * 교재비 별도, 조기 등록 시 10% 할인
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+        </section>
       </main>
-
-      <Footer />
-
-      {/* Modal */}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        title={koreanCoursesInfo.title}
-      >
-        <div dangerouslySetInnerHTML={{ __html: koreanCoursesInfo.content }} />
-      </Modal>
+      
+      {/* Footer intentionally not rendered here; shown on /agency-info only */}
     </div>
   );
 }

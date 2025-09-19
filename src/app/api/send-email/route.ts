@@ -1,75 +1,49 @@
-import { NextRequest, NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
+import { NextRequest, NextResponse } from "next/server";
+import nodemailer from "nodemailer";
 
-export async function POST(request: NextRequest) {
+type Payload = { name:string; email:string; phone?:string; message:string };
+
+export async function POST(req: NextRequest) {
   try {
-    const { name, email, phone, message } = await request.json();
+    const { name="", email="", phone="", message="" } = await req.json() as Payload;
 
-    // Validate required fields
-    if (!name || !email || !phone || !message) {
-      return NextResponse.json(
-        { error: 'All fields are required' },
-        { status: 400 }
-      );
+    if (!name.trim() || !email.trim() || !message.trim()) {
+      return NextResponse.json({ ok:false, error:"Missing required fields." }, { status:400 });
     }
 
-    // Create transporter
-    const transporter = nodemailer.createTransporter({
+    // SMTP 트랜스포터
+    const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: false, // true for 465, false for other ports
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
+      port: Number(process.env.SMTP_PORT || 465),
+      secure: String(process.env.SMTP_SECURE || "true") === "true", // 465:true, 587:false
+      auth: { user: process.env.SMTP_USER, pass: process.env.SES_SMTP_PASS || process.env.SMTP_PASS },
     });
 
-    // Email content
-    const mailOptions = {
-      from: process.env.SMTP_USER,
-      to: process.env.MY_EMAIL,
-      subject: `New Consultation Request from ${name}`,
+    // 연결 테스트(문제 있으면 바로 throw)
+    await transporter.verify();
+
+    const site = process.env.SITE_NAME || "CCAgency";
+    const to = process.env.TO_EMAIL || "ccagency.mn@gmail.com";
+
+    await transporter.sendMail({
+      // Gmail 사용 시 from 은 SMTP_USER 와 동일 도메인/주소 권장
+      from: `"${site} Contact" <${process.env.SMTP_USER}>`,
+      to,
+      replyTo: email,
+      subject: `📩 ${site} Inquiry from ${name}`,
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #3b82f6; border-bottom: 2px solid #3b82f6; padding-bottom: 10px;">
-            New Consultation Request
-          </h2>
-          
-          <div style="background-color: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="margin-top: 0; color: #111827;">Contact Information:</h3>
-            <p><strong>Name:</strong> ${name}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            <p><strong>Phone:</strong> ${phone}</p>
-          </div>
-          
-          <div style="margin: 20px 0;">
-            <h3 style="color: #111827;">Message:</h3>
-            <div style="background-color: #ffffff; padding: 15px; border-left: 4px solid #3b82f6; border-radius: 4px;">
-              ${message.replace(/\n/g, '<br>')}
-            </div>
-          </div>
-          
-          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px;">
-            <p>This email was sent from the Study Abroad Agency website consultation form.</p>
-            <p>Timestamp: ${new Date().toLocaleString()}</p>
-          </div>
-        </div>
-      `,
-    };
+        <h2>New Inquiry</h2>
+        <p><b>Name:</b> ${name}</p>
+        <p><b>Email:</b> ${email}</p>
+        <p><b>Phone:</b> ${phone || "-"}</p>
+        <p><b>Message</b></p>
+        <pre style="white-space:pre-wrap;">${message}</pre>
+      `
+    });
 
-    // Send email
-    await transporter.sendMail(mailOptions);
-
-    return NextResponse.json(
-      { message: 'Email sent successfully' },
-      { status: 200 }
-    );
-
-  } catch (error) {
-    console.error('Error sending email:', error);
-    return NextResponse.json(
-      { error: 'Failed to send email' },
-      { status: 500 }
-    );
+    return NextResponse.json({ ok:true });
+  } catch (err:any) {
+    console.error("send-email error:", err); // 서버 콘솔에서 실제 오류 원인 확인
+    return NextResponse.json({ ok:false, error: String(err?.message || err) }, { status:500 });
   }
 }

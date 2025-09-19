@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface School {
   id: string;
@@ -47,7 +48,7 @@ export default function AdminDashboard() {
       });
       
       if (response.ok) {
-        const data = await response.json();
+        const data = await response?.json();
         setSchools(data);
         
         // Calculate stats
@@ -311,10 +312,12 @@ export default function AdminDashboard() {
                         <div className="flex items-center">
                           <div className="flex-shrink-0 h-10 w-10">
                             {school.logo ? (
-                              <img 
+                              <Image 
                                 className="h-10 w-10 rounded-full object-cover" 
                                 src={school.logo} 
                                 alt={school.name}
+                                width={40}
+                                height={40}
                                 onError={(e) => {
                                   const target = e.target as HTMLImageElement;
                                   target.style.display = 'none';

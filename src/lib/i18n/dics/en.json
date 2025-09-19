@@ -1,0 +1,121 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "save": "Save",
+    "close": "Close",
+    "back": "Back",
+    "home": "Home",
+    "contact": "Contact",
+    "login": "Login",
+    "logout": "Logout",
+    "dashboard": "Dashboard",
+    "learnMore": "Learn More",
+    "getStarted": "Get Started",
+    "viewDetails": "View Details"
+  },
+  "agency": {
+    "name": "CCA Education Agency",
+    "shortName": "CCA",
+    "subtitle": "Premium International Education Consulting",
+    "description": "Your trusted partner for global education opportunities"
+  },
+  "navigation": {
+    "home": "Home",
+    "languageInstitutes": "Language Schools",
+    "universities": "Universities", 
+    "graduateSchools": "Graduate Programs",
+    "koreanCourses": "Korean Language",
+    "agencyInfo": "About Us",
+    "contact": "Contact Us",
+    "admin": "Admin Portal"
+  },
+  "hero": {
+    "title": "Transform Your Future Through Global Education",
+    "subtitle": "Your trusted gateway to world-class international education opportunities",
+    "description": "Partner with leading educational institutions worldwide. We provide comprehensive support from application to graduation, ensuring your academic success abroad.",
+    "learnMore": "Explore Programs",
+    "koreanCourses": "Korean Language Programs",
+    "stats": {
+      "students": "10,000+ Successful Students",
+      "universities": "500+ Partner Universities",
+      "countries": "25+ Countries",
+      "success": "98% Success Rate"
+    }
+  },
+  "services": {
+    "title": "Premium Education Programs",
+    "subtitle": "Discover world-class educational opportunities tailored to your goals",
+    "languageInstitutes": {
+      "title": "Language Schools",
+      "description": "Intensive language programs with certified instructors"
+    },
+    "universities": {
+      "title": "Universities",
+      "description": "Bachelor's and undergraduate degree programs"
+    },
+    "graduateSchools": {
+      "title": "Graduate Programs",
+      "description": "Master's and PhD programs at top institutions"
+    },
+    "koreanCourses": {
+      "title": "Korean Language",
+      "description": "Learn Korean with native speakers and cultural immersion"
+    }
+  },
+  "features": {
+    "title": "Why Choose Our Agency",
+    "subtitle": "Excellence in international education consulting since 2010",
+    "expertConsultation": {
+      "title": "Expert Consultation",
+      "description": "Personalized guidance from certified education consultants with 10+ years experience"
+    },
+    "globalNetwork": {
+      "title": "Global Network", 
+      "description": "Exclusive partnerships with 500+ top-ranked institutions across 25 countries"
+    },
+    "comprehensiveSupport": {
+      "title": "End-to-End Support",
+      "description": "From application to graduation: visa assistance, accommodation, academic support"
+    },
+    "provenResults": {
+      "title": "Proven Success",
+      "description": "98% acceptance rate with 10,000+ successful international students placed"
+    }
+  },
+  "contact": {
+    "title": "Start Your Journey Today",
+    "subtitle": "Get personalized consultation from our expert advisors",
+    "form": {
+      "name": "Full Name",
+      "email": "Email Address",
+      "phone": "Phone Number",
+      "message": "Tell us about your educational goals",
+      "send": "Send Inquiry",
+      "sending": "Sending...",
+      "success": "Thank you! We'll contact you within 24 hours.",
+      "error": "Sorry, there was an error. Please try again or contact us directly."
+    },
+    "info": {
+      "response": "We respond within 24 hours",
+      "consultation": "Free initial consultation",
+      "support": "Multilingual support available"
+    }
+  },
+  "admin": {
+    "title": "Admin Portal",
+    "login": {
+      "title": "Administrator Login",
+      "subtitle": "Secure access for authorized personnel",
+      "password": "Administrator Password",
+      "signIn": "Sign In",
+      "loggingIn": "Authenticating...",
+      "backToHome": "← Return to Website"
+    }
+  }
+}

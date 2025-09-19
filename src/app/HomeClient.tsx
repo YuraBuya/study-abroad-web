@@ -1,8 +1,7 @@
 "use client";
 
 import { useTranslation } from "@/hooks/useTranslation";
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import Footer from '@/components/layout/Footer';
 import ContactForm from '@/components/ContactForm';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -12,8 +11,6 @@ export default function HomeClient({ initialData }: { initialData?: any }) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
-      
       <main className="flex-1">
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-blue-50 to-indigo-100 py-12">

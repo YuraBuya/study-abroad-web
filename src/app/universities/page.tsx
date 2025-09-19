@@ -1,75 +1,157 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import SchoolCard from '@/components/SchoolCard';
-import { School } from '@/data/schoolsData';
+import UniversityCard, { University } from '@/components/UniversityCard';
+import BackToTopButton from '@/components/BackToTopButton';
+
+// Mock data for demonstration
+const mockUniversities: University[] = [
+  {
+    id: '1',
+    name: 'Seoul National University',
+    nameKorean: '서울대학교',
+    city: 'Seoul',
+    region: 'Seoul',
+    type: 'National',
+    logo: '/images/default-logo.svg',
+    desc: 'Seoul National University is a national research university located in Seoul, South Korea. It is consistently ranked as one of the top universities in Asia and the world.',
+    websiteUrl: 'https://www.snu.ac.kr',
+    pdfUrl: '/pdfs/sample.txt',
+    applyUrl: 'https://www.snu.ac.kr/apply'
+  },
+  {
+    id: '2',
+    name: 'Korea University',
+    nameKorean: '고려대학교',
+    city: 'Seoul',
+    region: 'Seoul',
+    type: 'Private',
+    logo: '/images/default-logo.svg',
+    desc: 'Korea University is a private research university located in Seoul, South Korea. It is one of the most prestigious universities in South Korea.',
+    websiteUrl: 'https://www.korea.ac.kr',
+    pdfUrl: '/pdfs/sample.txt',
+    applyUrl: 'https://www.korea.ac.kr/apply'
+  },
+  {
+    id: '3',
+    name: 'Yonsei University',
+    nameKorean: '연세대학교',
+    city: 'Seoul',
+    region: 'Seoul',
+    type: 'Private',
+    logo: '/images/default-logo.svg',
+    desc: 'Yonsei University is a private research university in Seoul, South Korea. It is one of the oldest universities in Korea and is known for its strong academic programs.',
+    websiteUrl: 'https://www.yonsei.ac.kr',
+    pdfUrl: '/pdfs/sample.txt',
+    applyUrl: 'https://www.yonsei.ac.kr/apply'
+  },
+  {
+    id: '4',
+    name: 'Pohang University of Science and Technology',
+    nameKorean: '포항공과대학교',
+    city: 'Pohang',
+    region: 'Gyeongsangbuk-do',
+    type: 'Tech',
+    logo: '/images/default-logo.svg',
+    desc: 'POSTECH is a private research university in Pohang, South Korea, focused on science and technology. It is known for its strong research programs and innovation.',
+    websiteUrl: 'https://www.postech.ac.kr',
+    pdfUrl: '/pdfs/sample.txt',
+    applyUrl: 'https://www.postech.ac.kr/apply'
+  }
+];
 
 export default function Universities() {
-  const [schools, setSchools] = useState<School[]>([]);
+  const [universities, setUniversities] = useState<University[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch schools from API
-    const fetchSchools = async () => {
+    // Fetch universities from API
+    const fetchUniversities = async () => {
       try {
         const response = await fetch('/api/admin/upload-school?type=UNIVERSITY');
         if (response.ok) {
-          const data = await response.json();
-          setSchools(data.schools);
+          const data = await response?.json();
+          // Transform data to match University type
+          const transformedUniversities = data.schools.map((school: any) => ({
+            id: school.id,
+            name: school.name,
+            nameKorean: school.nameKorean,
+            city: school.location?.split(', ')[0] || "Unknown",
+            region: school.location?.split(', ').pop() || "Unknown",
+            type: school.type === 'UNIVERSITY' ? 'Other' : school.type, // Map the type correctly
+            logo: school.logo,
+            desc: "Detailed information about this university...", // Placeholder description
+            websiteUrl: school.websiteUrl,
+            pdfUrl: school.pdfUrl,
+            applyUrl: school.applyUrl || school.websiteUrl
+          }));
+          setUniversities(transformedUniversities);
+        } else {
+          // Use mock data if API fails
+          setUniversities(mockUniversities);
         }
       } catch (error) {
-        console.error('Error fetching schools:', error);
+        // Use mock data if API fails
+        setUniversities(mockUniversities);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchSchools();
+    // Call the function immediately
+    fetchUniversities();
   }, []);
 
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Header />
-        <main className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading...</p>
+        <main className="flex-1 py-12">
+          <div className="container-custom">
+            <div className="text-center mb-12">
+              <div className="h-10 bg-gray-200 rounded w-1/3 mx-auto mb-4 animate-pulse"></div>
+              <div className="space-y-3 max-w-3xl mx-auto">
+                <div className="h-6 bg-gray-200 rounded w-full animate-pulse"></div>
+                <div className="h-6 bg-gray-200 rounded w-5/6 mx-auto animate-pulse"></div>
+                <div className="h-5 bg-gray-200 rounded w-3/4 mx-auto mt-3 animate-pulse"></div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[...Array(6)].map((_, index) => (
+                <div key={index} className="bg-gray-100 rounded-3xl h-64 animate-pulse"></div>
+              ))}
+            </div>
           </div>
         </main>
-        <Footer />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
-      
       <main className="flex-1 py-12">
-        <div className="container-custom">
-          {/* Page Header */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-800 mb-4">
-              대학교 / Universities
-            </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              세계 유명 대학교에서 학부 과정을 시작하세요. 
-              각 대학의 로고를 클릭하면 상세 정보를 확인할 수 있습니다.
-            </p>
-            <p className="text-lg text-gray-500 mt-2">
-              Start your undergraduate journey at world-renowned universities. 
-              Click on each university's logo to view detailed information.
+        <div className="relative mx-auto max-w-7xl px-4 py-8 sm:py-12 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-12">
+            <div className="mb-6">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight bg-gradient-to-r from-purple-900 via-purple-700 to-purple-500 bg-clip-text text-transparent">
+                Universities
+              </h1>
+              <p className="text-lg sm:text-xl font-medium text-purple-700 mt-2">Top Korean Universities</p>
+              <div className="mt-4 h-1.5 w-32 bg-gradient-to-r from-purple-500 to-fuchsia-500 rounded-full mx-auto" />
+            </div>
+            <p className="text-lg sm:text-xl text-purple-700 max-w-3xl mx-auto leading-relaxed">
+              <span className="block mt-2 text-purple-500">Browse universities and open brochures to learn more.</span>
             </p>
           </div>
 
-          {/* Schools Grid */}
-          {schools.length > 0 ? (
+          {/* Universities Grid */}
+          {universities.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {schools.map((school) => (
-                <SchoolCard key={school.id} school={school} />
+              {universities.map((university) => (
+                <UniversityCard 
+                  key={university.id} 
+                  data={university} 
+                />
               ))}
             </div>
           ) : (
@@ -127,8 +209,9 @@ export default function Universities() {
           </div>
         </div>
       </main>
-
-      <Footer />
+      
+      {/* Back to Top Button */}
+      <BackToTopButton />
     </div>
   );
 }

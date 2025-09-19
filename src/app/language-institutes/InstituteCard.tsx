@@ -1,0 +1,102 @@
+"use client";
+import Image from "next/image";
+import Link from "next/link";
+import { MapPin, ExternalLink, FileText, BookOpenText } from "lucide-react";
+
+export type Institute = {
+  id: string;
+  name: string;
+  nameKo?: string;
+  country?: string;
+  city?: string;
+  logoUrl: string;
+  desc?: string;
+  siteUrl?: string;
+  applyUrl?: string;
+  brochureUrl?: string;
+  detailsUrl?: string;
+};
+
+type Props = {
+  data: Institute;
+  tone?: "mint" | "lavender" | "blue" | "yellow" | "rose";
+};
+
+const toneMap: Record<NonNullable<Props["tone"]>, string> = {
+  mint:    "bg-gradient-to-br from-emerald-50 to-emerald-100/50 ring-emerald-200/60 hover:ring-emerald-300/80",
+  lavender:"bg-gradient-to-br from-violet-50 to-violet-100/50 ring-violet-200/60 hover:ring-violet-300/80",
+  blue:    "bg-gradient-to-br from-sky-50 to-sky-100/50 ring-sky-200/60 hover:ring-sky-300/80",
+  yellow:  "bg-gradient-to-br from-amber-50 to-amber-100/50 ring-amber-200/60 hover:ring-amber-300/80",
+  rose:    "bg-gradient-to-br from-rose-50 to-rose-100/50 ring-rose-200/60 hover:ring-rose-300/80",
+};
+
+export default function InstituteCard({ data, tone = "mint" }: Props) {
+  return (
+    <li className={`group relative overflow-hidden rounded-3xl ${toneMap[tone]} ring-1 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1`}>
+      <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-white/20 pointer-events-none" />
+
+      <div className="relative p-6">
+        <div className="flex items-start gap-4 mb-4">
+          <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-2xl bg-white ring-2 ring-white shadow-lg">
+            <Image
+              src={data.logoUrl || "/sample-logo.png"}
+              alt={data.name}
+              fill
+              className="object-contain p-2"
+              unoptimized
+              onError={(e) => {
+                const target = e.currentTarget as HTMLImageElement;
+                target.src = "/sample-logo.png";
+              }}
+            />
+          </div>
+
+          <div className="min-w-0 flex-1">
+            <h3 className="font-bold text-lg text-slate-900 leading-tight mb-1">
+              {data.name}
+            </h3>
+            {data.nameKo && (
+              <p className="text-sm font-medium text-slate-600 mb-2">{data.nameKo}</p>
+            )}
+            <div className="flex flex-wrap items-center gap-2">
+              {(data.city || data.country) && (
+                <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                  <MapPin className="h-3.5 w-3.5" />
+                  <span>{[data.city, data.country].filter(Boolean).join(", ")}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {data.desc && (
+          <p className="text-sm text-slate-700 leading-relaxed mb-6 line-clamp-3">{data.desc}</p>
+        )}
+
+        <div className="flex flex-wrap gap-2.5">
+          {data.siteUrl && (
+            <Link
+              href={data.siteUrl}
+              target="_blank"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200/80 bg-white/80 backdrop-blur-sm text-sm font-medium text-slate-700 transition-all duration-200 hover:bg-white hover:border-slate-300 hover:shadow-md hover:scale-105 active:scale-95"
+            >
+              <ExternalLink className="h-4 w-4" />
+              Official site
+            </Link>
+          )}
+
+          {data.detailsUrl ? (
+            <Link
+              href={data.detailsUrl}
+              target={data.detailsUrl.endsWith('.pdf') ? '_blank' : undefined}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200/80 bg-white/80 backdrop-blur-sm text-sm font-medium text-slate-700 transition-all duration-200 hover:bg-white hover:border-slate-300 hover:shadow-md hover:scale-105 active:scale-95"
+            >
+              <FileText className="h-4 w-4" />
+              Дэлгэрэнгүй
+            </Link>
+          ) : null}
+        </div>
+      </div>
+    </li>
+  );
+}

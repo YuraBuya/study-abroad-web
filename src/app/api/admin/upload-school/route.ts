@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import formidable from 'formidable';
-import fs from 'fs';
-import path from 'path';
 
 // Disable body parser for file uploads
 export const config = {

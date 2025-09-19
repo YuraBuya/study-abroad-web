@@ -1,10 +1,17 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 import { useTranslation } from '@/hooks/useTranslation';
-import { Language, languageLabels } from '@/lib/i18n';
 import { motion, AnimatePresence } from 'framer-motion';
+import type { Locale } from '@/lib/i18n/I18nProvider';
+
+const languageLabels: Record<Locale, string> = {
+  en: 'English',
+  ko: '한국어',
+  mn: 'Монгол'
+};
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -20,7 +27,7 @@ const Header = () => {
   ];
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newLanguage = e.target.value as Language;
+    const newLanguage = e.target.value as Locale;
     setLanguage(newLanguage);
   };
 
@@ -91,9 +98,11 @@ const Header = () => {
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
-              <img 
+              <Image 
                 src="/images/cca-logo.svg" 
                 alt="CCA Education Agency Logo" 
+                width={40}
+                height={40}
                 className="w-full h-full object-contain"
               />
             </motion.div>
@@ -230,7 +239,7 @@ const Header = () => {
                     >
                       {Object.entries(languageLabels).map(([code, label]) => (
                         <option key={code} value={code}>
-                          {label}
+                          {label as React.ReactNode}
                         </option>
                       ))}
                     </select>
