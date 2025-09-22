@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Providers from "./providers";
 import "../app/globals.css";
 import BottomNav from '@/components/BottomNav';
 import Header from '@/components/layout/Header';
@@ -20,36 +19,6 @@ const dictionaries = {
   ko: koDict,
   mn: mnDict
 };
-
-// Function to detect locale from headers
-function getLocaleFromHeaders(headers: Headers): string {
-  // Try to get locale from cookie first
-  const cookieHeader = headers.get('cookie');
-  if (cookieHeader) {
-    const cookies = cookieHeader.split(';').map(cookie => cookie.trim());
-    const localeCookie = cookies.find(cookie => cookie.startsWith('locale='));
-    if (localeCookie) {
-      const locale = localeCookie.split('=')[1];
-      if (['en', 'ko', 'mn'].includes(locale)) {
-        return locale;
-      }
-    }
-  }
-
-  // Fallback to accept-language header
-  const acceptLanguage = headers.get('accept-language');
-  if (acceptLanguage) {
-    const languages = acceptLanguage.split(',').map(lang => lang.split(';')[0].trim());
-    for (const lang of languages) {
-      if (lang.startsWith('en')) return 'en';
-      if (lang.startsWith('ko')) return 'ko';
-      if (lang.startsWith('mn')) return 'mn';
-    }
-  }
-
-  // Default to Mongolian
-  return 'mn';
-}
 
 export default function RootLayout({ 
   children 

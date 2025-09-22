@@ -6,8 +6,12 @@ import ContactForm from '@/components/ContactForm';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
-export default function HomeClient({ initialData }: { initialData?: any }) {
-  const { t } = useTranslation();
+interface HomeClientProps {
+  initialData?: Record<string, unknown>;
+}
+
+export default function HomeClient({ initialData: __initialData }: HomeClientProps) {
+  const { t: __t } = useTranslation();
 
   return (
     <div className="min-h-screen flex flex-col">

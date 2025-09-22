@@ -1,13 +1,13 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 
 // Supported languages
 export type Language = 'ko' | 'mn' | 'en';
 
 // Translation type
 type TranslationKey = string;
-type Translations = Record<string, any>;
+type Translations = Record<string, unknown>;
 
 // Context type
 interface I18nContextType {
@@ -39,7 +39,7 @@ export function I18nProvider({ children, initialLocale }: I18nProviderProps) {
   const [isLoading, setIsLoading] = useState(true);
 
   // Load translations for a specific language
-  const loadTranslations = async (lang: Language) => {
+  const loadTranslations = useCallback(async (lang: Language) => {
     try {
       setIsLoading(true);
       const response = await fetch(`/locales/${lang}.json`);
@@ -62,7 +62,7 @@ export function I18nProvider({ children, initialLocale }: I18nProviderProps) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   // Set language and persist to localStorage
   const setLanguage = (lang: Language) => {
@@ -76,11 +76,11 @@ export function I18nProvider({ children, initialLocale }: I18nProviderProps) {
   // Translation function
   const t = (key: TranslationKey): string => {
     const keys = key.split('.');
-    let value = translations;
+    let value: unknown = translations;
 
     for (const k of keys) {
-      if (value && typeof value === 'object' && k in value) {
-        value = value[k];
+      if (value && typeof value === 'object' && k in (value as Record<string, unknown>)) {
+        value = (value as Record<string, unknown>)[k];
       } else {
         console.warn(`Translation key not found: ${key}`);
         return key; // Return the key itself if translation not found
@@ -112,7 +112,7 @@ export function I18nProvider({ children, initialLocale }: I18nProviderProps) {
       // Server-side: load default language
       loadTranslations('mn');
     }
-  }, [initialLocale]);
+  }, [initialLocale, loadTranslations]);
 
   const value: I18nContextType = {
     language,

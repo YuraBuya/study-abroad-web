@@ -8,8 +8,8 @@ export interface School {
   logo: string;
   pdfUrl: string;
   type: 'LANGUAGE_INSTITUTE' | 'UNIVERSITY' | 'GRADUATE_SCHOOL';
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 // Get schools from database

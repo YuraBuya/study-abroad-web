@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import Image from 'next/image';
 
 export default function AddSchool() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -99,9 +101,11 @@ export default function AddSchool() {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 flex items-center justify-center">
-                <img 
+                <Image 
                   src="/images/cca-logo.svg" 
                   alt="CCA Education Agency Logo" 
+                  width={40}
+                  height={40}
                   className="w-full h-full object-contain"
                 />
               </div>
@@ -114,9 +118,9 @@ export default function AddSchool() {
               <Link href="/admin/dashboard" className="text-gray-600 hover:text-blue-600">
                 대시보드 / Dashboard
               </Link>
-              <a href="/" className="text-gray-600 hover:text-blue-600">
+              <Link href="/" className="text-gray-600 hover:text-blue-600">
                 홈으로 / Home
-              </a>
+              </Link>
               <button
                 onClick={handleLogout}
                 className="text-red-600 hover:text-red-700"

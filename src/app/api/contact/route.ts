@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
-type Payload = {
-  name: string;
-  email: string;
-  phone: string;
-  message: string;
-};
+// type Payload = {
+//   name: string;
+//   email: string;
+//   phone: string;
+//   message: string;
+// };
+// Payload type is no longer used directly since we're using readString helper
 
 // simple in-memory rate limit (per server instance)
 const WINDOW_MS = 60_000; // 1 min
@@ -45,11 +46,18 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const body = (await req.json()) as Partial<Payload>;
-    const name = (body.name || "").trim();
-    const email = (body.email || "").trim();
-    const phone = (body.phone || "").trim();
-    const message = (body.message || "").trim();
+    type Json = Record<string, unknown>;
+
+function readString(obj: Json, key: string): string {
+  const v = obj[key];
+  return typeof v === "string" ? v : "";
+}
+
+const body = (await req.json().catch(() => ({}))) as Json;
+    const name = readString(body, "name").trim();
+    const email = readString(body, "email").trim();
+    const phone = readString(body, "phone").trim();
+    const message = readString(body, "message").trim();
 
     // basic validation
     if (!name || !email || !message) {
@@ -97,10 +105,11 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ ok: true });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("contact error:", err);
+    const errorMessage = err instanceof Error ? err.message : "Email sending failed.";
     return NextResponse.json(
-      { ok: false, error: "Email sending failed." },
+      { ok: false, error: errorMessage },
       { status: 500 }
     );
   }

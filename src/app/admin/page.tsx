@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function AdminLogin() {
   const [password, setPassword] = useState('');
@@ -90,12 +91,12 @@ export default function AdminLogin() {
           </div>
 
           <div className="text-center">
-            <a
+            <Link
               href="/"
               className="text-blue-600 hover:text-blue-500 text-sm"
             >
               ← 홈으로 돌아가기 / Back to Home
-            </a>
+            </Link>
           </div>
         </form>
 

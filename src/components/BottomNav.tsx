@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, GraduationCap, BookOpen, Info, School } from "lucide-react";
+import { Home, GraduationCap, BookOpen, Info } from "lucide-react";
 
 type Item = {
   href: string;
@@ -62,7 +62,7 @@ export default function BottomNav() {
     <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-slate-200 bg-white/95 backdrop-blur block md:hidden">
       <ul className="mx-auto grid max-w-md grid-cols-5">
         {items.map(it => {
-          const active = it.match ? it.match(pathname) : pathname === it.href;
+          const active = it.match ? it.match(pathname || '') : (pathname || '') === it.href;
           return (
             <li key={it.href}>
               <Link

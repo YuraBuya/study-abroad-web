@@ -14,9 +14,7 @@ import {
   University,
   Building,
   BookOpen,
-  Info,
-  User,
-  LogIn
+  Info
 } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import type { Locale } from '@/lib/i18n/I18nProvider';
@@ -244,12 +242,12 @@ const Header = () => {
         
 
             {/* User menu - hidden on mobile */}
-            <button 
+            {/* <button 
               className="hidden md:flex items-center justify-center w-9 h-9 rounded-lg text-gray-600 hover:text-blue-500 hover:bg-blue-50 transition-colors"
               aria-label="User menu"
             >
               <User className="w-4 h-4" />
-            </button>
+            </button> */}
 
             {/* Mobile menu button */}
             <button

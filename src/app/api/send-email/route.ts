@@ -1,11 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
-type Payload = { name:string; email:string; phone?:string; message:string };
+type Json = Record<string, unknown>;
+
+function readString(obj: Json, key: string): string {
+  const v = obj[key];
+  return typeof v === "string" ? v : "";
+}
 
 export async function POST(req: NextRequest) {
   try {
-    const { name="", email="", phone="", message="" } = await req.json() as Payload;
+    const isJson = (req.headers.get("content-type") ?? "").includes("application/json");
+    const body = isJson ? ((await req.json().catch(() => ({}))) as Json) : ({} as Json);
+
+    const name = readString(body, "name").trim();
+    const email = readString(body, "email").trim();
+    const phone = readString(body, "phone").trim();
+    const message = readString(body, "message").trim();
 
     if (!name.trim() || !email.trim() || !message.trim()) {
       return NextResponse.json({ ok:false, error:"Missing required fields." }, { status:400 });
@@ -42,8 +53,9 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ ok:true });
-  } catch (err:any) {
+  } catch (err: unknown) {
     console.error("send-email error:", err); // 서버 콘솔에서 실제 오류 원인 확인
-    return NextResponse.json({ ok:false, error: String(err?.message || err) }, { status:500 });
+    const errorMessage = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ ok:false, error: errorMessage }, { status:500 });
   }
 }

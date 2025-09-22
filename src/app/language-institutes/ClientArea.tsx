@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
-import { Search, X, Filter, MapPin, BookOpenText } from "lucide-react";
+import { Search, X, Filter, BookOpenText } from "lucide-react";
 import InstituteCard, { Institute } from "./InstituteCard";
 
 type Props = {

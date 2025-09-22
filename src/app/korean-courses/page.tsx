@@ -88,7 +88,7 @@ export default function KoreanCourses() {
                 {['All', 'Beginner', 'Intermediate', 'Advanced'].map((filter) => (
                   <button
                     key={filter}
-                    onClick={() => setSelectedFilter(filter as any)}
+                    onClick={() => setSelectedFilter(filter as 'All' | 'Beginner' | 'Intermediate' | 'Advanced')}
                     className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                       selectedFilter === filter
                         ? 'bg-emerald-600 text-white shadow-md hover:bg-emerald-700'

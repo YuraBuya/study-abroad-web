@@ -1,12 +1,18 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import type { ReactNode } from 'react';
 
 // Types
 export type Locale = 'en' | 'ko' | 'mn';
-export type Dict = Record<string, unknown>;
+export type Dict = Record<string, string | Record<string, string | Record<string, string>>>;
 export type Dictionaries = Record<Locale, Dict>;
+
+// Helper function to safely get message from dictionary
+// function getMsg(dict: Dict, key: string): string {
+//   const v = dict[key];
+//   return typeof v === "string" ? v : "";
+// }
 
 // Context value type
 interface I18nContextValue {
@@ -42,19 +48,6 @@ export function I18nProvider({
   const [locale, setLocale] = useState<Locale>(initialLocale);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load translations for a specific language
-  const loadTranslations = useCallback(async (lang: Locale) => {
-    try {
-      setIsLoading(true);
-      // Translations are already loaded via props, so we just need to update state
-      setLocale(lang);
-    } catch (error) {
-      console.error('Error loading translations:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
   // Set locale and persist to localStorage
   const handleSetLocale = (lang: Locale) => {
     setLocale(lang);
@@ -64,7 +57,7 @@ export function I18nProvider({
   };
 
   // Translation function
-  const t = (key: string): string => {
+  const t = useCallback((key: string): string => {
     const dict = dictionaries[locale];
     if (!dict) {
       console.warn(`Dictionary not found for locale: ${locale}`);
@@ -84,7 +77,7 @@ export function I18nProvider({
     }
 
     return typeof value === 'string' ? value : key;
-  };
+  }, [dictionaries, locale]);
 
   // Initialize locale from localStorage on mount
   useEffect(() => {
@@ -103,7 +96,7 @@ export function I18nProvider({
     setLocale: handleSetLocale,
     t,
     isLoading
-  }), [locale, isLoading]);
+  }), [locale, isLoading, t]);
 
   return (
     <I18nContext.Provider value={value}>

@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 
 const socials = [
   { label: "Facebook", href: "https://www.facebook.com/CCAgency.ub", icon: "f" },

@@ -72,14 +72,27 @@ export default function Universities() {
         if (response.ok) {
           const data = await response?.json();
           // Transform data to match University type
-          const transformedUniversities = data.schools.map((school: any) => ({
+          // Define the type for the API response
+          interface SchoolApiResponse {
+            id: string;
+            name: string;
+            nameKorean?: string;
+            location?: string;
+            type: string;
+            logo?: string;
+            websiteUrl?: string;
+            pdfUrl?: string;
+            applyUrl?: string;
+          }
+
+          const transformedUniversities: University[] = data.schools.map((school: SchoolApiResponse) => ({
             id: school.id,
             name: school.name,
             nameKorean: school.nameKorean,
             city: school.location?.split(', ')[0] || "Unknown",
             region: school.location?.split(', ').pop() || "Unknown",
             type: school.type === 'UNIVERSITY' ? 'Other' : school.type, // Map the type correctly
-            logo: school.logo,
+            logo: school.logo || '',
             desc: "Detailed information about this university...", // Placeholder description
             websiteUrl: school.websiteUrl,
             pdfUrl: school.pdfUrl,
@@ -90,7 +103,7 @@ export default function Universities() {
           // Use mock data if API fails
           setUniversities(mockUniversities);
         }
-      } catch (error) {
+      } catch (__error) {
         // Use mock data if API fails
         setUniversities(mockUniversities);
       } finally {

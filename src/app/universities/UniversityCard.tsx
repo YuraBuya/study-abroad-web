@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { ExternalLink, Mail, FileText, MapPin, Building2, GraduationCap, Users, Award } from "lucide-react";
+import { ExternalLink, FileText, MapPin, Building2, GraduationCap, Users, Award } from "lucide-react";
 
 export type University = {
   id: string;

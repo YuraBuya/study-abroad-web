@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { 
   MapPin, 
   GraduationCap, 
@@ -29,14 +28,6 @@ interface School {
 interface SchoolCardProps {
   school: School;
 }
-
-const ICON_MAP = {
-  programType: GraduationCap,
-  language: Award,
-  topik: Award,
-  scholarship: BookOpen,
-  dormitory: Home
-};
 
 export default function SchoolCard({ school }: SchoolCardProps) {
   // Extract city from location (assuming format "City, Country")
