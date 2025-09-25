@@ -40,10 +40,18 @@ export default function BrochureUploader() {
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState(false);
   
+  interface Brochure {
+    id: number;
+    name: string;
+    slug: string;
+    url: string;
+    uploaded: string;
+  }
+
   // For brochure management
-  const [brochures, setBrochures] = useState<any[]>([]);
+  const [brochures, setBrochures] = useState<Brochure[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredBrochures, setFilteredBrochures] = useState<any[]>([]);
+  const [filteredBrochures, setFilteredBrochures] = useState<Brochure[]>([]);
   
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);

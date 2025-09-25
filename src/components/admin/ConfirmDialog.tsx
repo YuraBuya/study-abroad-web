@@ -20,7 +20,7 @@ interface ConfirmDialogProps {
   description: string;
   confirmText?: string;
   cancelText?: string;
-  onConfirm: () => void;
+  onConfirm?: () => void;
   onCancel?: () => void;
   confirmVariant?: "default" | "destructive" | "adminPrimary" | "adminSecondary" | "adminDestructive";
 }
@@ -67,7 +67,7 @@ export function ConfirmDialog({
               whileTap={{ scale: 0.95 }}
             >
               <AlertDialogAction asChild>
-                <Button variant={confirmVariant as any} className="rounded-lg">
+                <Button variant={confirmVariant as "default" | "destructive" | "adminPrimary" | "adminSecondary" | "adminDestructive"} className="rounded-lg">
                   {confirmText}
                 </Button>
               </AlertDialogAction>

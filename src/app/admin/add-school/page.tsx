@@ -335,7 +335,7 @@ export default function AddSchool() {
                 <FormField
                   label="Tags"
                   error={errors.tags?.message}
-                  description="Comma-separated tags (e.g., ivy-league, research, prestigious)"
+                  description="Comma-separated tags (e.g., &quot;ivy-league, research, prestigious&quot;)"
                 >
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -345,7 +345,7 @@ export default function AddSchool() {
                       id="tags"
                       type="text"
                       {...register('tags')}
-                      placeholder="ivy-league, research, prestigious"
+                      placeholder="&quot;ivy-league, research, prestigious&quot;"
                       className="pl-10 rounded-lg"
                     />
                   </div>
@@ -409,7 +409,7 @@ export default function AddSchool() {
             <ul role="list" className="list-disc space-y-1 pl-5">
               <li>Fields marked with * are required</li>
               <li>Logo and cover image URLs should be valid image URLs (PNG, JPG, SVG)</li>
-              <li>Tags should be comma-separated (e.g., "ivy-league, research, prestigious")</li>
+              <li>Tags should be comma-separated (e.g., &quot;ivy-league, research, prestigious&quot;)</li>
               <li>Korean name is optional but recommended for Korean institutions</li>
             </ul>
           </div>

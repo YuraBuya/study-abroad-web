@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { mapSchoolToDTO } from '@/lib/mappers';
 import { z } from 'zod';
+import { Prisma } from '@prisma/client';
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -38,9 +39,7 @@ export async function GET(request: NextRequest) {
     const { type, q, page, pageSize } = queryData.data;
     
     // Build where clause
-    const where: any = {
-      status: 'active', // Only return active schools
-    };
+    const where: Prisma.SchoolWhereInput = {};
     
     // Add type filter if provided
     if (type) {
@@ -60,9 +59,9 @@ export async function GET(request: NextRequest) {
     // Add search filter if provided
     if (q) {
       where.OR = [
-        { name: { contains: q, mode: 'insensitive' } },
-        { nameKorean: { contains: q, mode: 'insensitive' } },
-        { location: { contains: q, mode: 'insensitive' } },
+        { name: { contains: q } },
+        { nameKorean: { contains: q } },
+        { location: { contains: q } },
       ];
     }
     

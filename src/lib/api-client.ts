@@ -4,7 +4,7 @@ import { SchoolDTO, BrochureDTO } from './dto';
 
 interface ApiError extends Error {
   status?: number;
-  info?: any;
+  info?: string;
 }
 
 // Helper function to handle API errors

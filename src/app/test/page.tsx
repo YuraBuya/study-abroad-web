@@ -2,8 +2,23 @@
 
 import { useEffect, useState } from 'react';
 
+interface SchoolData {
+  items: Array<{
+    id: string;
+    name: string;
+    nameKorean?: string;
+    location: string;
+    type: string;
+    status: string;
+    // Add other properties as needed
+  }>;
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
 export default function TestPage() {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<SchoolData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

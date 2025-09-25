@@ -29,21 +29,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ChevronDown, Search, Filter } from "lucide-react";
+import { Search, Filter } from "lucide-react";
 import { motion } from 'framer-motion';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   searchField?: string;
-  onSearch?: (value: string) => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   searchField,
-  onSearch,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
