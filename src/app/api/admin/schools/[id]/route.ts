@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 // DELETE - Delete a specific school
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     // Check authorization
@@ -23,7 +23,7 @@ export async function DELETE(
       );
     }
 
-    const { id } = params;
+    const { id } = await context.params;
 
     // Check if school exists
     const existingSchool = await prisma.school.findUnique({
@@ -58,7 +58,7 @@ export async function DELETE(
 // GET - Get a specific school
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     // Check authorization
@@ -72,7 +72,7 @@ export async function GET(
       );
     }
 
-    const { id } = params;
+    const { id } = await context.params;
 
     const school = await prisma.school.findUnique({
       where: { id }

@@ -8,10 +8,10 @@ export const dynamic = "force-dynamic";
 // GET /api/public/schools/[slug]
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  context: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { slug } = params;
+    const { slug } = await context.params;
     
     // Fetch school by ID (slug is actually the ID in this case)
     const school = await prisma.school.findUnique({
