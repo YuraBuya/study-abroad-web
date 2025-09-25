@@ -29,9 +29,13 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     }
   }, []);
 
+  // Check if we're on an admin page
+  const isAdminPage = pathname?.startsWith('/admin') || false;
+
   // On mobile, only show footer on /agency-info page
   // On desktop/tablet, always show footer
-  const shouldShowFooter = !isMobile || pathname === '/agency-info';
+  // Never show footer on admin pages
+  const shouldShowFooter = !isAdminPage && (!isMobile || pathname === '/agency-info');
 
   return (
     <>

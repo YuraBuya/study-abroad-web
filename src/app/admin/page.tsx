@@ -2,114 +2,159 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
+import { Eye, EyeOff, Lock } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { FormField } from '@/components/admin/FormField';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { motion } from 'framer-motion';
 
-export default function AdminLogin() {
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+const loginSchema = z.object({
+  password: z.string().min(1, 'Password is required'),
+});
+
+type LoginFormData = z.infer<typeof loginSchema>;
+
+export default function AdminLoginPage() {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      password: '',
+    },
+  });
 
-    // Simple password check
-    if (password === process.env.NEXT_PUBLIC_ADMIN_PASS) {
-      // Store authentication in sessionStorage
-      sessionStorage.setItem('adminAuth', 'true');
+  const onSubmit = async (data: LoginFormData) => {
+    setIsSubmitting(true);
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: data.password }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData?.message || 'Login failed');
+      }
+
+      toast.success('Login successful!');
       router.push('/admin/dashboard');
-    } else {
-      setError('Invalid password. Please try again.');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Login failed');
+    } finally {
+      setIsSubmitting(false);
     }
-    
-    setIsLoading(false);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <div className="flex justify-center">
-            <div className="w-16 h-16 bg-blue-500 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-2xl">SA</span>
-            </div>
-          </div>
-          <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
-            Admin Login
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            관리자 로그인 / Administrator Access
-          </p>
-        </div>
-        
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="password" className="sr-only">
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              required
-              className="input"
-              placeholder="관리자 비밀번호 / Admin Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-
-          {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-              {error}
-            </div>
-          )}
-
-          <div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className={`btn w-full ${
-                isLoading ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-md"
+      >
+        <Card className="rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 text-center">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ 
+                type: "spring", 
+                stiffness: 260, 
+                damping: 20,
+                delay: 0.2
+              }}
+              className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm mb-4"
             >
-              {isLoading ? (
-                <div className="flex items-center justify-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  로그인 중... / Logging in...
+              <Lock className="h-8 w-8 text-white" />
+            </motion.div>
+            <CardTitle className="text-2xl font-bold text-white">Admin Portal</CardTitle>
+            <CardDescription className="text-blue-100 mt-2">
+              Secure access to administration panel
+            </CardDescription>
+          </div>
+          <CardContent className="p-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                label="Administrator Password"
+                error={errors.password?.message}
+                required
+              >
+                <div className="relative">
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    {...register('password')}
+                    placeholder="Enter your password"
+                    disabled={isSubmitting}
+                    className="rounded-lg pl-4 pr-12 py-3 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-gray-500"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-5 w-5" />
+                    ) : (
+                      <Eye className="h-5 w-5" />
+                    )}
+                  </Button>
                 </div>
-              ) : (
-                '로그인 / Sign In'
-              )}
-            </button>
-          </div>
+              </FormField>
 
-          <div className="text-center">
-            <Link
-              href="/"
-              className="text-blue-600 hover:text-blue-500 text-sm"
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Button 
+                  type="submit" 
+                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white rounded-lg py-3 font-semibold shadow-md hover:shadow-lg transition-all duration-300" 
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <motion.span 
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        className="mr-2 h-4 w-4"
+                      >
+                        ⏳
+                      </motion.span>
+                      Authenticating...
+                    </>
+                  ) : (
+                    'Sign In'
+                  )}
+                </Button>
+              </motion.div>
+            </form>
+
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="mt-6 text-center text-xs text-gray-500"
             >
-              ← 홈으로 돌아가기 / Back to Home
-            </Link>
-          </div>
-        </form>
-
-        <div className="mt-8 p-4 bg-blue-50 rounded-lg">
-          <h3 className="text-sm font-medium text-blue-800 mb-2">Demo Access:</h3>
-          <p className="text-sm text-blue-700">
-            Password: <code className="bg-blue-100 px-2 py-1 rounded">admin123</code>
-          </p>
-          <p className="text-xs text-blue-600 mt-1">
-            This is for demonstration purposes only.
-          </p>
-        </div>
-      </div>
+              Protected access. Unauthorized access is prohibited.
+            </motion.div>
+          </CardContent>
+        </Card>
+      </motion.div>
     </div>
   );
 }

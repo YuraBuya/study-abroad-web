@@ -1,119 +1,143 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import UniversityCard, { University } from '@/components/UniversityCard';
+import { useState, useEffect, useMemo } from 'react';
+import UniversityCard from '@/components/UniversityCard';
 import BackToTopButton from '@/components/BackToTopButton';
+import SchoolSearchFilter from '@/components/SchoolSearchFilter';
+import Pagination from '@/components/Pagination';
+import { fetchSchools } from '@/lib/api-client';
+import { SchoolDTO } from '@/lib/dto';
 
-// Mock data for demonstration
-const mockUniversities: University[] = [
-  {
-    id: '1',
-    name: 'Seoul National University',
-    nameKorean: '서울대학교',
-    city: 'Seoul',
-    region: 'Seoul',
-    type: 'National',
-    logo: '/images/default-logo.svg',
-    desc: 'Seoul National University is a national research university located in Seoul, South Korea. It is consistently ranked as one of the top universities in Asia and the world.',
-    websiteUrl: 'https://www.snu.ac.kr',
-    pdfUrl: '/pdfs/sample.txt',
-    applyUrl: 'https://www.snu.ac.kr/apply'
-  },
-  {
-    id: '2',
-    name: 'Korea University',
-    nameKorean: '고려대학교',
-    city: 'Seoul',
-    region: 'Seoul',
-    type: 'Private',
-    logo: '/images/default-logo.svg',
-    desc: 'Korea University is a private research university located in Seoul, South Korea. It is one of the most prestigious universities in South Korea.',
-    websiteUrl: 'https://www.korea.ac.kr',
-    pdfUrl: '/pdfs/sample.txt',
-    applyUrl: 'https://www.korea.ac.kr/apply'
-  },
-  {
-    id: '3',
-    name: 'Yonsei University',
-    nameKorean: '연세대학교',
-    city: 'Seoul',
-    region: 'Seoul',
-    type: 'Private',
-    logo: '/images/default-logo.svg',
-    desc: 'Yonsei University is a private research university in Seoul, South Korea. It is one of the oldest universities in Korea and is known for its strong academic programs.',
-    websiteUrl: 'https://www.yonsei.ac.kr',
-    pdfUrl: '/pdfs/sample.txt',
-    applyUrl: 'https://www.yonsei.ac.kr/apply'
-  },
-  {
-    id: '4',
-    name: 'Pohang University of Science and Technology',
-    nameKorean: '포항공과대학교',
-    city: 'Pohang',
-    region: 'Gyeongsangbuk-do',
-    type: 'Tech',
-    logo: '/images/default-logo.svg',
-    desc: 'POSTECH is a private research university in Pohang, South Korea, focused on science and technology. It is known for its strong research programs and innovation.',
-    websiteUrl: 'https://www.postech.ac.kr',
-    pdfUrl: '/pdfs/sample.txt',
-    applyUrl: 'https://www.postech.ac.kr/apply'
+interface University {
+  id: string;
+  name: string;
+  nameKorean?: string;
+  city?: string;
+  region?: string;
+  type?: "National" | "Private" | "Women" | "Tech" | "Other";
+  logo: string;
+  desc?: string;
+  websiteUrl?: string;
+  pdfUrl?: string;
+  applyUrl?: string;
+}
+
+// Map SchoolDTO type to UniversityCard expected type
+function mapSchoolDTOToUniversity(school: SchoolDTO): University {
+  // Parse location to extract city and region
+  const locationParts = school.location.split(', ');
+  const city = locationParts[0] || "Unknown";
+  const region = locationParts.length > 1 ? locationParts[locationParts.length - 1] : "Unknown";
+  
+  // Map school type to UniversityCard type
+  let type: "National" | "Private" | "Women" | "Tech" | "Other" | undefined;
+  switch (school.type) {
+    case 'UNIVERSITY':
+      type = "National"; // Default to National for universities
+      break;
+    case 'LANGUAGE_INSTITUTE':
+      type = "Other"; // Default to Other for language institutes
+      break;
+    case 'GRADUATE_SCHOOL':
+      type = "Other"; // Default to Other for graduate schools
+      break;
+    default:
+      type = "Other";
   }
-];
+  
+  return {
+    id: school.id,
+    name: school.name,
+    nameKorean: school.nameKorean,
+    city: city,
+    region: region,
+    type: type,
+    logo: school.logo || '/images/default-logo.svg',
+    desc: school.description || "Detailed information about this university...",
+    websiteUrl: school.website,
+    pdfUrl: school.pdfUrl,
+    applyUrl: school.website || school.pdfUrl
+  };
+}
 
 export default function Universities() {
   const [universities, setUniversities] = useState<University[]>([]);
+  const [allUniversities, setAllUniversities] = useState<University[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [typeFilter, setTypeFilter] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize] = useState(9); // Number of items per page
+
+  // Filter universities based on search query and type filter
+  const filteredUniversities = useMemo(() => {
+    return allUniversities.filter(university => {
+      const matchesSearch = 
+        university.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (university.nameKorean && university.nameKorean.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (university.city && university.city.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (university.region && university.region.toLowerCase().includes(searchQuery.toLowerCase()));
+      
+      const matchesType = 
+        typeFilter === 'all' || 
+        (typeFilter === 'national' && university.type === 'National') ||
+        (typeFilter === 'private' && university.type === 'Private') ||
+        (typeFilter === 'women' && university.type === 'Women') ||
+        (typeFilter === 'tech' && university.type === 'Tech');
+      
+      return matchesSearch && matchesType;
+    });
+  }, [allUniversities, searchQuery, typeFilter]);
 
   useEffect(() => {
-    // Fetch universities from API
+    // Reset to first page when filters change
+    setCurrentPage(1);
+  }, [searchQuery, typeFilter]);
+
+  useEffect(() => {
+    // Update displayed universities when filteredUniversities or currentPage changes
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    setUniversities(filteredUniversities.slice(startIndex, endIndex));
+    
+    // Calculate total pages
+    setTotalPages(Math.ceil(filteredUniversities.length / pageSize));
+  }, [filteredUniversities, currentPage, pageSize]);
+
+  useEffect(() => {
+    // Fetch universities from public API
     const fetchUniversities = async () => {
       try {
-        const response = await fetch('/api/admin/upload-school?type=UNIVERSITY');
-        if (response.ok) {
-          const data = await response?.json();
-          // Transform data to match University type
-          // Define the type for the API response
-          interface SchoolApiResponse {
-            id: string;
-            name: string;
-            nameKorean?: string;
-            location?: string;
-            type: string;
-            logo?: string;
-            websiteUrl?: string;
-            pdfUrl?: string;
-            applyUrl?: string;
-          }
-
-          const transformedUniversities: University[] = data.schools.map((school: SchoolApiResponse) => ({
-            id: school.id,
-            name: school.name,
-            nameKorean: school.nameKorean,
-            city: school.location?.split(', ')[0] || "Unknown",
-            region: school.location?.split(', ').pop() || "Unknown",
-            type: school.type === 'UNIVERSITY' ? 'Other' : school.type, // Map the type correctly
-            logo: school.logo || '',
-            desc: "Detailed information about this university...", // Placeholder description
-            websiteUrl: school.websiteUrl,
-            pdfUrl: school.pdfUrl,
-            applyUrl: school.applyUrl || school.websiteUrl
-          }));
-          setUniversities(transformedUniversities);
-        } else {
-          // Use mock data if API fails
-          setUniversities(mockUniversities);
-        }
-      } catch (__error) {
-        // Use mock data if API fails
-        setUniversities(mockUniversities);
+        setLoading(true);
+        const response = await fetchSchools({ type: 'university' });
+        
+        // Transform SchoolDTO to University type
+        const transformedUniversities: University[] = response.items.map(mapSchoolDTOToUniversity);
+        
+        setAllUniversities(transformedUniversities);
+      } catch (err) {
+        console.error('Error fetching universities:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load universities');
       } finally {
         setLoading(false);
       }
     };
 
-    // Call the function immediately
     fetchUniversities();
   }, []);
+
+  const handleSearch = (query: string, type: string) => {
+    setSearchQuery(query);
+    setTypeFilter(type);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    // Scroll to top of the page
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   if (loading) {
     return (
@@ -140,6 +164,36 @@ export default function Universities() {
     );
   }
 
+  if (error) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <main className="flex-1 py-12">
+          <div className="container-custom">
+            <div className="text-center py-12">
+              <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-12 h-12 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                Error Loading Universities
+              </h3>
+              <p className="text-gray-600 mb-4">
+                {error}
+              </p>
+              <button 
+                onClick={() => window.location.reload()}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Retry
+              </button>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-1 py-12">
@@ -157,16 +211,35 @@ export default function Universities() {
             </p>
           </div>
 
+          {/* Search and Filter */}
+          <SchoolSearchFilter 
+            onSearch={handleSearch}
+            placeholder="Search universities..."
+          />
+
           {/* Universities Grid */}
           {universities.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {universities.map((university) => (
-                <UniversityCard 
-                  key={university.id} 
-                  data={university} 
-                />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {universities.map((university) => (
+                  <UniversityCard 
+                    key={university.id} 
+                    data={university} 
+                  />
+                ))}
+              </div>
+              
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="mt-12 flex justify-center">
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                  />
+                </div>
+              )}
+            </>
           ) : (
             <div className="text-center py-12">
               <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -175,10 +248,10 @@ export default function Universities() {
                 </svg>
               </div>
               <h3 className="text-xl font-semibold text-gray-600 mb-2">
-                현재 등록된 대학교가 없습니다
+                No universities found
               </h3>
               <p className="text-gray-500">
-                No universities are currently registered
+                Try adjusting your search or filter criteria
               </p>
             </div>
           )}

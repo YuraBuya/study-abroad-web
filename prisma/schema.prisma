@@ -34,3 +34,15 @@ enum SchoolType {
 
   @@map("school_types")
 }
+
+model AgencySettings {
+  id            Int      @id
+  agencyName    String
+  defaultLocale String
+  supportEmail  String
+  supportPhone  String?
+  facebookUrl   String?
+  consultationUrl String?
+  updatedAt     DateTime @updatedAt
+  createdAt     DateTime @default(now())
+}
