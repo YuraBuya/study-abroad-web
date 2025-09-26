@@ -7,6 +7,7 @@ import SchoolSearchFilter from '@/components/SchoolSearchFilter';
 import Pagination from '@/components/Pagination';
 import { fetchSchools } from '@/lib/api-client';
 import { SchoolDTO } from '@/lib/dto';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface LanguageInstitute {
   id: string;
@@ -61,6 +62,7 @@ function mapSchoolDTOToLanguageInstitute(school: SchoolDTO): LanguageInstitute {
 }
 
 export default function LanguageInstitutes() {
+  const { t } = useTranslation();
   const [institutes, setInstitutes] = useState<LanguageInstitute[]>([]);
   const [allInstitutes, setAllInstitutes] = useState<LanguageInstitute[]>([]);
   const [loading, setLoading] = useState(true);
@@ -174,7 +176,7 @@ export default function LanguageInstitutes() {
                 </svg>
               </div>
               <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                Error Loading Language Institutes
+                {t('errors.loadingLanguageInstitutes')}
               </h3>
               <p className="text-gray-600 mb-4">
                 {error}
@@ -183,7 +185,7 @@ export default function LanguageInstitutes() {
                 onClick={() => window.location.reload()}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
-                Retry
+                {t('errors.retry')}
               </button>
             </div>
           </div>

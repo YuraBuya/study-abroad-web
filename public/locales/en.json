@@ -117,5 +117,10 @@
       "loggingIn": "Authenticating...",
       "backToHome": "← Return to Website"
     }
+  },
+  "errors": {
+    "loadingUniversities": "Error Loading Universities",
+    "loadingLanguageInstitutes": "Error Loading Language Institutes",
+    "retry": "Retry"
   }
 }

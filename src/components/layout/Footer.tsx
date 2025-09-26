@@ -77,7 +77,7 @@ export default function Footer() {
 
           {/* Contact Section */}
           <div>
-            <h3 className="text-gray-900 font-semibold mb-4">{t('Contact')}</h3>
+            <h3 className="text-gray-900 font-semibold mb-4">{t('contact', { defaultValue: 'Contact' })}</h3>
             <ul className="space-y-3">
               {contactInfo.map((contact, index) => {
                 const Icon = contact.icon;

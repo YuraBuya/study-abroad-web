@@ -7,6 +7,7 @@ import SchoolSearchFilter from '@/components/SchoolSearchFilter';
 import Pagination from '@/components/Pagination';
 import { fetchSchools } from '@/lib/api-client';
 import { SchoolDTO } from '@/lib/dto';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface University {
   id: string;
@@ -61,6 +62,7 @@ function mapSchoolDTOToUniversity(school: SchoolDTO): University {
 }
 
 export default function Universities() {
+  const { t } = useTranslation();
   const [universities, setUniversities] = useState<University[]>([]);
   const [allUniversities, setAllUniversities] = useState<University[]>([]);
   const [loading, setLoading] = useState(true);
@@ -176,7 +178,7 @@ export default function Universities() {
                 </svg>
               </div>
               <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                Error Loading Universities
+                {t('errors.loadingUniversities')}
               </h3>
               <p className="text-gray-600 mb-4">
                 {error}
@@ -185,7 +187,7 @@ export default function Universities() {
                 onClick={() => window.location.reload()}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
-                Retry
+                {t('errors.retry')}
               </button>
             </div>
           </div>

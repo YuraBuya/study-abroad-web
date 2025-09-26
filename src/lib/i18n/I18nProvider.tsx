@@ -18,7 +18,7 @@ export type Dictionaries = Record<Locale, Dict>;
 interface I18nContextValue {
   locale: Locale;
   setLocale: (locale: Locale) => void;
-  t: (key: string) => string;
+  t: (key: string, options?: { defaultValue?: string }) => string;
   isLoading: boolean;
 }
 
@@ -57,7 +57,7 @@ export function I18nProvider({
   };
 
   // Translation function
-  const t = useCallback((key: string): string => {
+  const t = useCallback((key: string, options?: { defaultValue?: string }): string => {
     const dict = dictionaries[locale];
     if (!dict) {
       console.warn(`Dictionary not found for locale: ${locale}`);
@@ -72,7 +72,7 @@ export function I18nProvider({
         value = (value as Record<string, unknown>)[k];
       } else {
         console.warn(`Translation key not found: ${key} for locale: ${locale}`);
-        return key; // Return the key itself if translation not found
+        return options?.defaultValue ?? key; // Return default value or key itself if translation not found
       }
     }
 
